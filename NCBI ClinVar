@@ -1,0 +1,63 @@
+import sys
+import subprocess
+
+# Installs biopython into the exact Python environment running this notebook
+subprocess.check_call([sys.executable, "-m", "pip", "install", "biopython", "python-dotenv", "openai", "--break-system-packages"])
+
+import os
+import socket
+from Bio import Entrez
+from dotenv import load_dotenv
+from IPython.display import Markdown, display
+from openai import OpenAI
+
+# Set a default network timeout (10 seconds) for external HTTP requests
+socket.setdefaulttimeout(10)
+
+# Load environment variables from .env file
+load_dotenv(override=True)
+
+# Retrieve API key and email address
+api_key = os.getenv("OPENAI_API_KEY")
+ncbi_email = os.getenv("NCBI_EMAIL")
+
+# Validate the API key presence
+if not api_key:
+    print("❌ ERROR: OPENAI_API_KEY missing! Check your .env file.")
+else:
+    print("✅ SUCCESS: OPENAI_API_KEY loaded.")
+
+# Initialize OpenAI client and set NCBI Entrez identity
+client = OpenAI(api_key=api_key)
+Entrez.email = ncbi_email if ncbi_email else "giouvanis.16017@gmai.com" 
+
+# Set a default network timeout (10 seconds) for external HTTP requests
+socket.setdefaulttimeout(10)
+
+# Load environment variables from .env file
+load_dotenv(override=True)
+
+# Retrieve API key and email address
+api_key = os.getenv("OPENAI_API_KEY")
+ncbi_email = os.getenv("NCBI_EMAIL")
+
+# Validate the API key presence
+if not api_key:
+    print("❌ ERROR: OPENAI_API_KEY missing! Check your .env file.")
+else:
+    print("✅ SUCCESS: OPENAI_API_KEY loaded.")
+
+# Initialize OpenAI client and set NCBI Entrez identity
+client = OpenAI(api_key=api_key)
+Entrez.email = ncbi_email if ncbi_email else "giouvanis.16017@gmai.com" 
+
+# --- Execution Block ---
+if __name__ == "__main__":
+    # Example ClinVar Variation ID (17661 = BRCA1 c.5266dupC)
+    target_clinvar_id = "17661"
+
+    print(f"🔬 Starting analysis for ClinVar ID: {target_clinvar_id}\n")
+    report = analyze_variant(target_clinvar_id)
+
+    # Render report nicely in Jupyter Notebook environment
+    display(Markdown(report))
